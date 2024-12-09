@@ -9,7 +9,7 @@ client = OpenAI(
     api_key=OPENAI_API_KEY
 )
 
-def translate_text(text, source_lang="English", target_lang="French"):
+def translate_text(text, source_lang="Spanish", target_lang="English"):
     """
     Translates a given text from one language to another using OpenAI's GPT-4 API.
 
@@ -34,7 +34,12 @@ def translate_text(text, source_lang="English", target_lang="French"):
         return f"Error: {str(e)}"
 
 if __name__ == "__main__":
-    text_to_translate = "This is a test sentence to translate into French."
-    translation = translate_text(text_to_translate)
+    source_lang = "Spanish"
+    target_lang = "English"
+    text_to_translate = f"Hola, qué tal?"
+
+    print("Translating text:", text_to_translate)
+
+    translation = translate_text(text_to_translate, source_lang=source_lang, target_lang=target_lang)
 
     print("Translation:", translation)
