@@ -114,6 +114,7 @@ class TranslatorAgent:
                 "task_id": data["task_id"],
                 "step_status": AgentExecutionStatus.Completed.value,
                 "output": translated_text,
+                "output_artifacts": [],
                 "is_last": True
             }
         )

@@ -110,7 +110,8 @@ class TranslatorAgent:
             step=update_data
         )
 
-        await self._log_task(step["task_id"], message, AgentExecutionStatus.Completed.value)
+        if step.get("is_last", False):
+            await self._log_task(step["task_id"], message, AgentExecutionStatus.Completed.value)
     
     async def _log_task(self, task_id, message, status=None):
         """
