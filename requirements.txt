@@ -33,7 +33,7 @@ natsort==8.4.0
 openai==1.57.0
 packaging==24.2
 pathspec==0.12.1
-payments-py==0.5.3
+payments-py==0.5.4
 pinatapy-vourhey==0.2.0
 platformdirs==4.3.6
 pluggy==1.5.0

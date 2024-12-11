@@ -221,8 +221,7 @@ class TranslatorAgent:
         """
         # Retrieve the subtask result from the AI protocol
         subtask_result = self.payment.ai_protocol.get_task_with_steps(THIRD_PARTY_AGENT_DID, subtask_id)
-        subtask_data = subtask_result["data"]
-
+        subtask_data = subtask_result.json()
         # Determine the status of the subtask
         status = (
             AgentExecutionStatus.Completed.value
@@ -231,7 +230,7 @@ class TranslatorAgent:
         )
 
         # Mark the main step as completed or failed with the subtask's output
-        await self._complete_step(
+        return await self._complete_step(
             step,
             f"Subtask {'completed' if status == AgentExecutionStatus.Completed.value else 'failed'}",
             output=subtask_data["task"].get("output", ""),
