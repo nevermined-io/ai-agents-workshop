@@ -139,24 +139,24 @@ class TranslatorAgent:
         """
         await self._log_task(task_id, message, AgentExecutionStatus.Failed.value)
 
-    async def _handle_init_step(self, step):
+    async def _handle_init_step(self, current_step):
         """
         Handles the initialization step, creating subsequent steps.
         """
         translate_step_id = generate_step_id()
         text2speech_step_id = generate_step_id()
 
-        steps = [
+        new_steps = [
             {
                 "step_id": translate_step_id,
-                "task_id": step["task_id"],
-                "predecessor": step["step_id"],
+                "task_id": current_step["task_id"],
+                "predecessor": current_step["step_id"],
                 "name": "translate",
                 "is_last": False,
             },
             {
                 "step_id": text2speech_step_id,
-                "task_id": step["task_id"],
+                "task_id": current_step["task_id"],
                 "predecessor": translate_step_id,
                 "name": "text2speech",
                 "is_last": True,
@@ -165,12 +165,12 @@ class TranslatorAgent:
 
         # Create new steps in the AI protocol
         self.payment.ai_protocol.create_steps(
-            step["did"],
-            step["task_id"],
-            {"steps": steps}
+            current_step["did"],
+            current_step["task_id"],
+            {"steps": new_steps}
         )
 
-        await self._complete_step(step, "Init step completed")
+        await self._complete_step(current_step, "Init step completed")
 
     async def _handle_translate_step(self, data, step):
         """
