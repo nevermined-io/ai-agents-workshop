@@ -187,10 +187,12 @@ class TranslatorAgent:
         # Define a callback to handle the response from the third-party agent
         async def task_callback(callback_data):
             task_log = json.loads(callback_data)
-            if task_log["task_status"] == AgentExecutionStatus.Completed.value:
+            if task_log.get('task_status', None) == AgentExecutionStatus.Completed.value:
                 await self._subtask_finished(task_log["task_id"], step)
+            elif task_log.get('task_status', None) == AgentExecutionStatus.Failed.value:
+                await self._log_task_error(data["task_id"], f"Error in subtask: {task_log.get('message', '')}")
             else:
-                await self._log_task_error(data["task_id"], task_log.get("message", "Unknown error"))
+                await self._log_task(data["task_id"], task_log.get('message', ''), task_log.get('task_status', None))
 
         # Create the task with the third-party agent
         result = await self.payment.ai_protocol.create_task(
@@ -205,7 +207,7 @@ class TranslatorAgent:
             await self._log_task(
                 data["task_id"],
                 f"Subtask with id {created_task['task']['task_id']} created successfully",
-                AgentExecutionStatus.Pending.value
+                AgentExecutionStatus.Pending
             )
         else:
             # Log an error if the subtask creation fails
@@ -222,6 +224,7 @@ class TranslatorAgent:
         # Retrieve the subtask result from the AI protocol
         subtask_result = self.payment.ai_protocol.get_task_with_steps(THIRD_PARTY_AGENT_DID, subtask_id)
         subtask_data = subtask_result.json()
+        
         # Determine the status of the subtask
         status = (
             AgentExecutionStatus.Completed.value
@@ -309,7 +312,7 @@ class TranslatorAgent:
             task_id (str): Task identifier.
             message (str): Start message.
         """
-        await self._log_task(task_id, message, AgentExecutionStatus.Pending.value)
+        await self._log_task(task_id, message, AgentExecutionStatus.Pending)
 
     async def _log_task_error(self, task_id, message):
         """
@@ -319,7 +322,7 @@ class TranslatorAgent:
             task_id (str): Task identifier.
             message (str): Error message.
         """
-        await self._log_task(task_id, message, AgentExecutionStatus.Failed.value)
+        await self._log_task(task_id, message, AgentExecutionStatus.Failed)
 
 
 

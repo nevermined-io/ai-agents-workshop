@@ -121,7 +121,7 @@ class Text2SpeechAgent:
             step={
                 "step_id": data["step_id"],
                 "task_id": data["task_id"],
-                "step_status": AgentExecutionStatus.Completed.value,
+                "step_status": AgentExecutionStatus.Completed,
                 "output": ipfs_url,
                 "output_artifacts": [ipfs_url],
                 "is_last": True
@@ -154,7 +154,7 @@ class Text2SpeechAgent:
             task_id=task_id,
             message=message,
             level="info",
-            task_status=AgentExecutionStatus.Completed.value
+            task_status=AgentExecutionStatus.Completed
         ))
 
     async def _log_task_error(self, task_id, error_message):
@@ -169,7 +169,7 @@ class Text2SpeechAgent:
             task_id=task_id,
             message=error_message,
             level="error",
-            task_status=AgentExecutionStatus.Failed.value
+            task_status=AgentExecutionStatus.Failed
         ))
 
 
