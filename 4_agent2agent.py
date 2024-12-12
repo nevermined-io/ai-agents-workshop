@@ -209,6 +209,7 @@ class TranslatorAgent:
                 f"Subtask with id {created_task['task']['task_id']} created successfully",
                 AgentExecutionStatus.Pending
             )
+            
         else:
             # Log an error if the subtask creation fails
             await self._log_task_error(data["task_id"], f"Error creating subtask: {result.text}")
@@ -288,7 +289,7 @@ class TranslatorAgent:
 
         # Log the completion of the step
         if step.get("is_last", False):
-            await self._log_task(step["task_id"], message, AgentExecutionStatus.Completed.value)
+            await self._log_task(step["task_id"], message, AgentExecutionStatus.Completed)
 
     async def _log_task(self, task_id, message, status=None):
         """
