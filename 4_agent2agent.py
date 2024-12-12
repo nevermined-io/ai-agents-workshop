@@ -207,8 +207,16 @@ class TranslatorAgent:
             await self._log_task(
                 data["task_id"],
                 f"Subtask with id {created_task['task']['task_id']} created successfully",
-                AgentExecutionStatus.Pending
+                AgentExecutionStatus.In_Progress
             )
+            # Update status to don't be processed twice if the response take long
+            self.payment.ai_protocol.update_step(
+                step["did"],
+                step["task_id"],
+                step_id=step["step_id"],
+                step={"step_status": AgentExecutionStatus.In_Progress.value}
+            )
+            
         else:
             # Log an error if the subtask creation fails
             await self._log_task_error(data["task_id"], f"Error creating subtask: {result.text}")
@@ -288,7 +296,7 @@ class TranslatorAgent:
 
         # Log the completion of the step
         if step.get("is_last", False):
-            await self._log_task(step["task_id"], message, AgentExecutionStatus.Completed.value)
+            await self._log_task(step["task_id"], message, AgentExecutionStatus.Completed)
 
     async def _log_task(self, task_id, message, status=None):
         """
