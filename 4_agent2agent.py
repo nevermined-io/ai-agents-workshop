@@ -207,14 +207,7 @@ class TranslatorAgent:
             await self._log_task(
                 data["task_id"],
                 f"Subtask with id {created_task['task']['task_id']} created successfully",
-                AgentExecutionStatus.In_Progress
-            )
-            # Update status to don't be processed twice if the response take long
-            self.payment.ai_protocol.update_step(
-                step["did"],
-                step["task_id"],
-                step_id=step["step_id"],
-                step={"step_status": AgentExecutionStatus.In_Progress.value}
+                AgentExecutionStatus.Pending
             )
             
         else:
